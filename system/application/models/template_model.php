@@ -1417,6 +1417,13 @@ p($modules );
 							
 							$try_file = MODULES_DIR . 'modules/' . $attr ['module'] . '.php';
 							
+							$try_file_db_file = MODULES_DIR . $attr ['module'] . '_db.php';
+							$try_file_db_file = normalize_path($try_file_db_file, false);
+							//p($try_file_db_file);
+							if (is_file ( $try_file_db_file ) == true) {
+								CI::model ( 'init' )->db_setup_from_file ( $try_file_db_file );
+							}
+							
 							if ($options ['admin'] == true) {
 								$try_file1 = MODULES_DIR . 'admin/' . $attr ['module'] . '.php';
 								$try_filefront = MODULES_DIR . '' . $attr ['module'] . '.php';

@@ -306,7 +306,7 @@ $.each(obj.attributes, function(i, val) {
 $(".js_generated").remove();
 
 
-
+$(".mw_non_sortable").removeClass('mw_non_sortable');
 
 // window.saving =true;
 
@@ -345,6 +345,7 @@ $(".js_generated").remove();
  
 
  nic_save_all = function(callback, only_preview){
+$(".mw_non_sortable", '.edit').removeClass('mw_non_sortable');
 
  var master = {}
   // $(".mw_edited").each(function(j){
@@ -354,7 +355,12 @@ $(".js_generated").remove();
  //$(this).addClass("mw_edited");
 
 var nic_obj = {};
-
+if(window.no_async == true){
+$async_save = false;	
+	window.no_async = false;
+} else {
+	$async_save = true;	
+}
 
 
 
@@ -404,7 +410,7 @@ master[objX] = obj;
 		  url: "<?php print site_url('api/content/save_field/peview:true');  ?>",
 		  data: master,
 		  datatype: "jsonp",
-          async:true,
+          async:$async_save,
 		  beforeSend :  function() {
 			
 			  window.saving =true;
@@ -419,7 +425,7 @@ master[objX] = obj;
 		  url: "<?php print site_url('api/content/save_field');  ?>",
 		  data: master,
 		  datatype: "json",
-          async:true,
+          async:$async_save,
 		  beforeSend :  function() {
 			  	  window.mw_sortables_created = false;
  
@@ -437,6 +443,18 @@ master[objX] = obj;
  
   init_edits()
   mw_load_history_module()
+  
+  
+  if(window.parent.mw != undefined){
+	  
+	  window.parent.mw.reload_module('admin/posts/edit');
+	window.parent.mw.reload_module('admin/pages/edit');
+  }
+  
+  	 
+	
+	
+	
 		  
 		   
 
@@ -490,7 +508,7 @@ master[objX] = obj;
    //$('#module_temp_holder').hide();
  
  
- if(only_preview  == undefined){
+ if(only_preview  == undefined || only_preview  == false){
  $.each(data, function(i, item) {
 						$("#"+data[i].page_element_id).html(data[i].page_element_content);
 				//		alert(item.page_element_id+item.page_element_content);
@@ -646,12 +664,12 @@ function mw_load_history_module(){
       <input type="text"  id="module_temp_holder_id" value="" />
       <input type="text"  id="module_focus_holder_id" value="" />
       <div id="buttons"> </div>
-    </div>
-    <div id="sortable-delete" style="display:none;" class="edit">del <br />
-      <br />
-    </div>
-    <div class="module_draggable"  id="module_temp_holder">
-      <textarea rows="1"  style="display: none;" id="module_temp_holder_value">test</textarea>
+      <div id="sortable-delete" style="display:none;" class="edit">del <br />
+        <br />
+      </div>
+      <div class="module_draggable"  id="module_temp_holder">
+        <textarea rows="1"  style="display: none;" id="module_temp_holder_value">test</textarea>
+      </div>
     </div>
     <script>
     
@@ -664,9 +682,26 @@ function mw_load_history_module(){
         f.contentDocument.location = f.src;
     }
 }
+
+
+
+
+
+
+ 
     </script>
     <!--  <input name="mw_load_history_module()" type="button" onClick="mw_load_history_module()" value="mw_load_history_module()" />-->
     <!--<input name="reloadIframesreloadIframes" type="button" onClick="reloadIframes()" value="reloadIframes" />-->
+    <img  id="mw_toolbar_logo"  src="<?php   print( ADMIN_STATIC_FILES_URL);  ?>logo2.png"   />
+    <!--<table border="0" id="mw_toolbar_text_edit">
+      <tr>
+        <td><a href="javascript:mw_html_tag_editor_apply_style_for_element('font-weight', 'bold', 'normal')" css_name="font-weight">Bold</a></td>
+        <td><a href="javascript:mw_html_tag_editor_apply_style_for_element('font-style', 'italic', 'normal')">Italic</a></td>
+        <td><a href="javascript:mw_html_tag_editor_apply_style_for_element('font-weight', 'bold', 'normal')">Underline</a></td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+    </table>-->
   </div>
   <div class="toobar_container_right">
     <div id="mw_toolbar_pre_nav"> <span id="mw_toolbar_pre_nav_title">Live edit</span> <a href="#">
@@ -815,7 +850,34 @@ function mw_sidebar_nav($selector){
     
     </a> 
     -->
-    <a href="<? print site_url('admin'); ?>" class="mw_toolbar_nav_go_to_admin"> <span> Switch to Admin </span> </a>
+     <?
+	 
+	 $sw_to_admin_link = site_url('admin');
+	 	  if(intval(PAGE_ID) > 0){
+		  $sw_to_admin_link =  site_url('admin/action:page_edit/id:').PAGE_ID;
+		 
+	 }
+	 
+	 if(intval(POST_ID) > 0){
+		  $sw_to_admin_link =  site_url('admin/action:post_edit/id:').POST_ID;
+		 
+	 }
+	 
+
+	 
+	 
+ 
+	 
+	 ?>
+    
+    
+    
+    
+    
+    
+    
+     
+    <a href="<? print  $sw_to_admin_link ?>" class="mw_toolbar_nav_go_to_admin"> <span> Switch to Admin </span> </a>
     <div id="mw_sidebar_styler"> </div>
   </div>
 </div>

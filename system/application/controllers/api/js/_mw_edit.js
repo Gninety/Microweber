@@ -2718,9 +2718,19 @@ function update_module_element($new_value) {
 	  
 }
 
-mw.saveALL = function(){
- //	$( ".edit .module" ).children().remove();
+
+function mw_saveALL($no_async) {
 	
+ 
+	mw.saveALL($no_async);
+	  
+}
+
+
+
+mw.saveALL = function($no_async){
+ //	$( ".edit .module" ).children().remove();
+	window.no_async = true;
 	nic_save_all(function(){
 		
 		init_edits();
